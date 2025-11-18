@@ -10,6 +10,27 @@ class PublicPostController extends Controller
 {
     public function index(Request $request)
     {
+        // DEBUG: Check all posts and published posts
+        if ($request->has('debug')) {
+            $allPosts = Post::all();
+            $publishedPosts = Post::published()->get();
+
+            dd([
+                'total_posts' => $allPosts->count(),
+                'published_posts' => $publishedPosts->count(),
+                'all_posts_detail' => $allPosts->map(function($p) {
+                    return [
+                        'id' => $p->id,
+                        'title' => $p->title,
+                        'status' => $p->status,
+                        'published_at' => $p->published_at ? $p->published_at->format('Y-m-d H:i:s') : 'NULL',
+                        'is_future' => $p->published_at && $p->published_at->isFuture(),
+                        'now' => now()->format('Y-m-d H:i:s'),
+                    ];
+                }),
+            ]);
+        }
+
         $query = Post::published();
 
         // Filter by category
