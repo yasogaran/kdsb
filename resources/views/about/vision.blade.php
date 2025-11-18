@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Vision & Mission</x-slot>
-    <x-slot name="description">Learn about the vision, mission, and values that drive Kandy District Scout Branch.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Vision & Mission')
+@section('description', 'Learn about the vision, mission, and values that drive Kandy District Scout Branch.')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-20">
@@ -98,4 +101,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

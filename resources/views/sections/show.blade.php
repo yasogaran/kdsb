@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">{{ $sectionData['name'] }}</x-slot>
-    <x-slot name="description">{{ $sectionData['description'] }}</x-slot>
+@extends('layouts.public')
+
+@section('title', '{{ $sectionData['name'] }}')
+@section('description', '{{ $sectionData['description'] }}')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-20">
@@ -48,4 +51,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

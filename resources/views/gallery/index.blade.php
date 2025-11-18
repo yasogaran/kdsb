@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Photo Gallery</x-slot>
-    <x-slot name="description">Explore memorable moments from our scouting activities and events.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Photo Gallery')
+@section('description', 'Explore memorable moments from our scouting activities and events.')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-20">
@@ -39,4 +42,4 @@
             @endif
         </div>
     </section>
-</x-layouts.public>
+@endsection

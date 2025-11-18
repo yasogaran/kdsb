@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">{{ $product->name }}</x-slot>
-    <x-slot name="description">{{ $product->description ? Str::limit(strip_tags($product->description), 160) : $product->name }}</x-slot>
+@extends('layouts.public')
+
+@section('title', '{{ $product->name }}')
+@section('description', '{{ $product->description ? Str::limit(strip_tags($product->description), 160) : $product->name }}')
+
+@section('content')
 
     <section class="py-20">
         <div class="container mx-auto px-4">
@@ -100,4 +103,4 @@
             @endif
         </div>
     </section>
-</x-layouts.public>
+@endsection

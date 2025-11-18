@@ -6,23 +6,23 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- SEO Meta Tags -->
-        <title>{{ $title ?? 'Kandy District Scout Branch' }} | Kandy Scouts</title>
-        <meta name="description" content="{{ $description ?? 'Building tomorrow\'s leaders through adventure, service, and character development since 1912.' }}">
+        <title>@yield('title', 'Kandy District Scout Branch') | Kandy Scouts</title>
+        <meta name="description" content="@yield('description', 'Building tomorrow\'s leaders through adventure, service, and character development since 1912.')">
         <meta name="keywords" content="scouts, kandy scouts, sri lanka scouts, scouting, youth development, leadership">
 
         <!-- Open Graph Meta Tags -->
-        <meta property="og:title" content="{{ $title ?? 'Kandy District Scout Branch' }}">
-        <meta property="og:description" content="{{ $description ?? 'Building tomorrow\'s leaders through adventure, service, and character development since 1912.' }}">
-        <meta property="og:image" content="{{ $ogImage ?? asset('images/og-default.jpg') }}">
+        <meta property="og:title" content="@yield('title', 'Kandy District Scout Branch')">
+        <meta property="og:description" content="@yield('description', 'Building tomorrow\'s leaders through adventure, service, and character development since 1912.')">
+        <meta property="og:image" content="@yield('ogImage', asset('images/og-default.jpg'))">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Kandy District Scout Branch">
 
         <!-- Twitter Card Meta Tags -->
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="{{ $title ?? 'Kandy District Scout Branch' }}">
-        <meta name="twitter:description" content="{{ $description ?? 'Building tomorrow\'s leaders through adventure, service, and character development since 1912.' }}">
-        <meta name="twitter:image" content="{{ $ogImage ?? asset('images/og-default.jpg') }}">
+        <meta name="twitter:title" content="@yield('title', 'Kandy District Scout Branch')">
+        <meta name="twitter:description" content="@yield('description', 'Building tomorrow\'s leaders through adventure, service, and character development since 1912.')">
+        <meta name="twitter:image" content="@yield('ogImage', asset('images/og-default.jpg'))">
 
         <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -43,7 +43,7 @@
 
         <!-- Main Content -->
         <main>
-            {{ $slot }}
+            @yield('content')
         </main>
 
         <!-- Footer -->

@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Home</x-slot>
-    <x-slot name="description">Kandy District Scout Branch - Building tomorrow's leaders through adventure, service, and character development since 1912.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Home')
+@section('description', 'Kandy District Scout Branch - Building tomorrow's leaders through adventure, service, and character development since 1912.')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
@@ -264,4 +267,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

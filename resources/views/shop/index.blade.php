@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Scout Gear & Merchandise</x-slot>
-    <x-slot name="description">Browse our selection of official scout uniforms, badges, camping gear, and accessories.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Scout Gear & Merchandise')
+@section('description', 'Browse our selection of official scout uniforms, badges, camping gear, and accessories.')
+
+@section('content')
 
     <!-- Hero Banner -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-16">
@@ -110,4 +113,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

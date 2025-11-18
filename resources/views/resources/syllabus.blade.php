@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Syllabus & Training Materials</x-slot>
-    <x-slot name="description">Access training materials, handbooks, and resources for all scout sections.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Syllabus & Training Materials')
+@section('description', 'Access training materials, handbooks, and resources for all scout sections.')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-20">
@@ -53,4 +56,4 @@
             @endif
         </div>
     </section>
-</x-layouts.public>
+@endsection

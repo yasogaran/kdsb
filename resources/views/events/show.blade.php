@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">{{ $event->title }}</x-slot>
-    <x-slot name="description">{{ $event->excerpt ?? Str::limit(strip_tags($event->description), 160) }}</x-slot>
+@extends('layouts.public')
+
+@section('title', '{{ $event->title }}')
+@section('description', '{{ $event->excerpt ?? Str::limit(strip_tags($event->description), 160) }}')
+
+@section('content')
 
     <!-- Hero Banner -->
     <section class="relative h-[500px]">
@@ -124,4 +127,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

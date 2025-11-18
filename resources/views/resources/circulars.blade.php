@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Official Circulars</x-slot>
-    <x-slot name="description">Access important announcements and official documents from Kandy District Scout Branch.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Official Circulars')
+@section('description', 'Access important announcements and official documents from Kandy District Scout Branch.')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-20">
@@ -81,4 +84,4 @@
             @endif
         </div>
     </section>
-</x-layouts.public>
+@endsection

@@ -1,7 +1,10 @@
-<x-layouts.public>
-    <x-slot name="title">{{ $post->title }}</x-slot>
-    <x-slot name="description">{{ $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160) }}</x-slot>
-    <x-slot name="ogImage">{{ $post->featured_image ? Storage::url($post->featured_image) : null }}</x-slot>
+@extends('layouts.public')
+
+@section('title', '{{ $post->title }}')
+@section('description', '{{ $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160) }}')
+
+@section('content')
+@section('ogImage', '{{ $post->featured_image ? Storage::url($post->featured_image) : null }}')
 
     <!-- Featured Image -->
     @if($post->featured_image)
@@ -86,4 +89,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

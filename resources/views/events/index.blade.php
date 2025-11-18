@@ -1,6 +1,9 @@
-<x-layouts.public>
-    <x-slot name="title">Events</x-slot>
-    <x-slot name="description">Discover upcoming scouting events, training camps, and activities in Kandy District.</x-slot>
+@extends('layouts.public')
+
+@section('title', 'Events')
+@section('description', 'Discover upcoming scouting events, training camps, and activities in Kandy District.')
+
+@section('content')
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-amber-900 to-emerald-900 py-20">
@@ -53,4 +56,4 @@
             @endif
         </div>
     </section>
-</x-layouts.public>
+@endsection
