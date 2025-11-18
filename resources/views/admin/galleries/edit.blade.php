@@ -280,7 +280,7 @@
                         <p class="mt-2 text-sm text-gray-600">
                             <span class="font-semibold text-primary">Click to upload</span> or drag and drop
                         </p>
-                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB each</p>
+                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 12MB each • Max total: 100MB</p>
                     </label>
                 </div>
                 <div id="uploadProgress" class="hidden mt-4">
@@ -388,14 +388,49 @@
         const files = event.target.files;
         if (files.length === 0) return;
 
+        // Validate individual file sizes and total size
+        const maxFileSize = 12 * 1024 * 1024; // 12MB in bytes
+        const maxTotalSize = 100 * 1024 * 1024; // 100MB in bytes
+        let totalSize = 0;
+        let hasOversizedFile = false;
+        let oversizedFileName = '';
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            totalSize += file.size;
+
+            // Check individual file size
+            if (file.size > maxFileSize) {
+                hasOversizedFile = true;
+                oversizedFileName = file.name;
+                break;
+            }
+        }
+
+        // Show error if individual file is too large
+        if (hasOversizedFile) {
+            alert(`Error: "${oversizedFileName}" exceeds the maximum file size of 12MB. Please compress or resize the image before uploading.`);
+            event.target.value = '';
+            return;
+        }
+
+        // Show error if total size exceeds limit
+        if (totalSize > maxTotalSize) {
+            const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
+            alert(`Error: Total upload size (${totalSizeMB} MB) exceeds the maximum limit of 100 MB. Please reduce the number of images or compress them before uploading.`);
+            event.target.value = '';
+            return;
+        }
+
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
             formData.append('images[]', files[i]);
         }
 
-        // Show progress
+        // Show progress with size info
+        const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
         document.getElementById('uploadProgress').classList.remove('hidden');
-        document.getElementById('uploadMessage').textContent = `Uploading ${files.length} image(s)...`;
+        document.getElementById('uploadMessage').textContent = `Uploading ${files.length} image(s) (${totalSizeMB} MB)...`;
 
         fetch('{{ route("admin.galleries.images.store", $gallery) }}', {
             method: 'POST',
