@@ -14,7 +14,6 @@
         <div>
             <p class="text-sm text-gray-600">Manage course syllabi and academic resources</p>
         </div>
-        @can('create syllabi')
         <a href="{{ route('admin.syllabi.create') }}"
            class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-800 transition">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,7 +21,6 @@
             </svg>
             Add New Syllabus
         </a>
-        @endcan
     </div>
 
     <!-- Filters -->
@@ -200,12 +198,10 @@
                             @endif
                         </p>
                         @if(!request()->hasAny(['search', 'category', 'resource_type', 'is_active']))
-                        @can('create syllabi')
                         <a href="{{ route('admin.syllabi.create') }}"
                            class="inline-block mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-800 transition">
                             Add Syllabus
                         </a>
-                        @endcan
                         @endif
                     </td>
                 </tr>
