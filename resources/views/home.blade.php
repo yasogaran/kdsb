@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('title', 'Home')
-@section('description', 'Kandy District Scout Branch - Building tomorrow's leaders through adventure, service, and character development since 1912.')
+@section('description', 'Kandy District Scout Branch - Building tomorrow\'s leaders through adventure, service, and character development since 1912.')
 
 @section('content')
 
