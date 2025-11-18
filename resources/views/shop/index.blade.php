@@ -69,29 +69,39 @@
                             @foreach($products as $product)
                                 <div class="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
                                     <a href="{{ route('shop.show', $product->slug) }}" class="block relative aspect-square overflow-hidden bg-slate-100">
-                                        @if($product->images && is_array($product->images) && count($product->images) > 0)
-                                            <img src="{{ Storage::url($product->images[0]) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                                        @if($product->primary_image)
+                                            <img src="{{ Storage::url($product->primary_image) }}" alt="{{ $product->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-amber-900 to-emerald-900"></div>
                                         @endif
 
                                         <!-- Stock Badge -->
-                                        @if($product->stock > 0)
+                                        @if($product->qty > 0)
                                             <x-badge type="success" class="absolute top-2 left-2">In Stock</x-badge>
                                         @else
                                             <x-badge type="error" class="absolute top-2 left-2">Out of Stock</x-badge>
+                                        @endif
+
+                                        <!-- Sale Badge -->
+                                        @if($product->sale_price && $product->sale_price < $product->price)
+                                            <x-badge type="error" class="absolute top-2 right-2">Sale</x-badge>
                                         @endif
                                     </a>
 
                                     <div class="p-4">
                                         @if($product->category)
-                                            <p class="text-xs text-slate-500 mb-2">{{ $product->category }}</p>
+                                            <p class="text-xs text-slate-500 mb-2">{{ $product->category->name }}</p>
                                         @endif
                                         <h3 class="font-semibold text-slate-900 mb-2 group-hover:text-amber-900 transition">
-                                            <a href="{{ route('shop.show', $product->slug) }}">{{ $product->name }}</a>
+                                            <a href="{{ route('shop.show', $product->slug) }}">{{ $product->title }}</a>
                                         </h3>
                                         <div class="flex items-baseline gap-2 mb-3">
-                                            <span class="text-2xl font-bold text-amber-900">LKR {{ number_format($product->price, 2) }}</span>
+                                            @if($product->sale_price && $product->sale_price < $product->price)
+                                                <span class="text-2xl font-bold text-red-600">LKR {{ number_format($product->sale_price, 2) }}</span>
+                                                <span class="text-sm text-slate-400 line-through">LKR {{ number_format($product->price, 2) }}</span>
+                                            @else
+                                                <span class="text-2xl font-bold text-amber-900">LKR {{ number_format($product->price, 2) }}</span>
+                                            @endif
                                         </div>
                                         <a href="{{ route('shop.show', $product->slug) }}" class="w-full block text-center px-4 py-2 bg-amber-900 text-white rounded-md hover:bg-amber-800 transition">
                                             View Details

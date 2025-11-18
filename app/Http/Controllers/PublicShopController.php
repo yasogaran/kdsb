@@ -9,11 +9,13 @@ class PublicShopController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::where('published', true);
+        $query = Product::where('status', 'available');
 
         // Filter by category
         if ($request->has('category')) {
-            $query->where('category', $request->category);
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
         }
 
         // Filter by price range
@@ -26,13 +28,13 @@ class PublicShopController extends Controller
 
         // Filter by stock status
         if ($request->has('in_stock') && $request->in_stock) {
-            $query->where('stock', '>', 0);
+            $query->where('qty', '>', 0);
         }
 
         // Search
         if ($request->has('search')) {
             $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
+                $q->where('title', 'like', '%' . $request->search . '%')
                   ->orWhere('description', 'like', '%' . $request->search . '%');
             });
         }
@@ -47,7 +49,7 @@ class PublicShopController extends Controller
                 $query->orderBy('price', 'desc');
                 break;
             case 'name':
-                $query->orderBy('name', 'asc');
+                $query->orderBy('title', 'asc');
                 break;
             default:
                 $query->latest('created_at');
@@ -56,25 +58,27 @@ class PublicShopController extends Controller
         $products = $query->paginate(12);
 
         // Get available categories
-        $categories = Product::where('published', true)
-            ->select('category')
-            ->distinct()
-            ->whereNotNull('category')
-            ->pluck('category');
+        $categories = Product::where('status', 'available')
+            ->with('category')
+            ->get()
+            ->pluck('category')
+            ->unique()
+            ->filter();
 
         return view('shop.index', compact('products', 'categories'));
     }
 
     public function show($slug)
     {
-        $product = Product::where('published', true)
+        $product = Product::where('status', 'available')
             ->where('slug', $slug)
+            ->with(['category', 'images'])
             ->firstOrFail();
 
         // Get related products
-        $relatedProducts = Product::where('published', true)
+        $relatedProducts = Product::where('status', 'available')
             ->where('id', '!=', $product->id)
-            ->where('category', $product->category)
+            ->where('category_id', $product->category_id)
             ->take(4)
             ->get();
 
