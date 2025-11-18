@@ -1,7 +1,10 @@
 @extends('layouts.public')
 
 @section('title', 'Contact Us')
-@section('description', 'Get in touch with Kandy District Scout Branch. We'd love to hear from you!')
+
+@section('description')
+Get in touch with Kandy District Scout Branch. We'd love to hear from you!
+@endsection
 
 @section('content')
 
