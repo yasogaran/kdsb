@@ -31,7 +31,11 @@ class PublicPostController extends Controller
             ->latest('published_at')
             ->paginate(12);
 
-        $categories = Category::withCount('posts')->get();
+        $categories = Category::withCount(['posts' => function($query) {
+            $query->where('status', 'published')
+                  ->whereNotNull('published_at')
+                  ->where('published_at', '<=', now());
+        }])->get();
 
         return view('news.index', compact('posts', 'categories'));
     }
@@ -51,7 +55,11 @@ class PublicPostController extends Controller
             ->get();
 
         // Get all categories
-        $categories = Category::withCount('posts')->get();
+        $categories = Category::withCount(['posts' => function($query) {
+            $query->where('status', 'published')
+                  ->whereNotNull('published_at')
+                  ->where('published_at', '<=', now());
+        }])->get();
 
         return view('news.show', compact('post', 'recentPosts', 'categories'));
     }
