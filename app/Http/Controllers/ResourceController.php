@@ -14,7 +14,7 @@ class ResourceController extends Controller
 
         // Filter by year
         if ($request->has('year')) {
-            $query->whereYear('date', $request->year);
+            $query->whereYear('published_date', $request->year);
         }
 
         // Filter by category
@@ -26,14 +26,14 @@ class ResourceController extends Controller
         if ($request->has('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('reference_number', 'like', '%' . $request->search . '%');
+                  ->orWhere('circular_number', 'like', '%' . $request->search . '%');
             });
         }
 
-        $circulars = $query->latest('date')->paginate(20);
+        $circulars = $query->latest('published_date')->paginate(20);
 
         // Get available years
-        $years = Circular::selectRaw('YEAR(date) as year')
+        $years = Circular::selectRaw('YEAR(published_date) as year')
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
