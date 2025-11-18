@@ -15,6 +15,10 @@ class Product extends Model
         'title',
         'slug',
         'sku',
+        'brand',
+        'gtin',
+        'mpn',
+        'condition',
         'category_id',
         'group',
         'primary_image',
@@ -22,7 +26,10 @@ class Product extends Model
         'description',
         'price',
         'sale_price',
+        'currency',
+        'price_valid_until',
         'qty',
+        'availability_date',
         'status',
         'meta_title',
         'meta_description',
@@ -32,6 +39,8 @@ class Product extends Model
         'price' => 'decimal:2',
         'sale_price' => 'decimal:2',
         'qty' => 'integer',
+        'price_valid_until' => 'date',
+        'availability_date' => 'date',
     ];
 
     public function category(): BelongsTo
