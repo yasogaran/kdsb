@@ -39,6 +39,23 @@
                         @enderror
                     </div>
 
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                            Category
+                        </label>
+                        <input type="text"
+                               name="category"
+                               id="category"
+                               value="{{ old('category', $circular->category) }}"
+                               placeholder="e.g., administrative, academic, general"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('category') border-red-500 @enderror">
+                        @error('category')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">Optional - helps organize circulars</p>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Circular Number -->
                         <div>
@@ -104,7 +121,7 @@
                             <span class="text-sm text-gray-700">Current File: {{ basename($circular->file_path) }}</span>
                         </div>
                     </div>
-                    @elseif($circular->file_type === 'link' && $circular->external_link)
+                    @elseif($circular->file_type === 'url' && $circular->external_link)
                     <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +144,7 @@
                                 onchange="toggleFileFields()">
                             <option value="">Select File Type</option>
                             <option value="file" {{ old('file_type', $circular->file_type) == 'file' ? 'selected' : '' }}>File Upload</option>
-                            <option value="link" {{ old('file_type', $circular->file_type) == 'link' ? 'selected' : '' }}>External Link</option>
+                            <option value="url" {{ old('file_type', $circular->file_type) == 'url' ? 'selected' : '' }}>External Link</option>
                         </select>
                         @error('file_type')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -219,7 +236,7 @@
 
         if (fileType === 'file') {
             fileField.classList.remove('hidden');
-        } else if (fileType === 'link') {
+        } else if (fileType === 'url') {
             linkField.classList.remove('hidden');
         }
     }

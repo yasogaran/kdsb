@@ -13,6 +13,7 @@ class Circular extends Model
         'circular_number',
         'circular_code',
         'title',
+        'category',
         'file_type',
         'file_path',
         'external_link',

@@ -13,6 +13,11 @@ class CircularController extends Controller
     {
         $query = Circular::query();
 
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
         // Filter by file type
         if ($request->filled('file_type')) {
             $query->where('file_type', $request->file_type);
@@ -48,9 +53,10 @@ class CircularController extends Controller
             'circular_number' => 'required|string|max:255|unique:circulars,circular_number',
             'circular_code' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
-            'file_type' => 'required|in:pdf_upload,drive_link,doc_upload',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'external_link' => 'nullable|url',
+            'category' => 'nullable|string|max:255',
+            'file_type' => 'required|in:file,url',
+            'file_path' => 'required_if:file_type,file|nullable|file|mimes:pdf,doc,docx|max:10240',
+            'external_link' => 'required_if:file_type,url|nullable|url',
             'published_date' => 'required|date',
             'is_pinned' => 'boolean',
         ]);
@@ -60,6 +66,15 @@ class CircularController extends Controller
             $file = $request->file('file_path');
             $filename = time() . '_' . uniqid() . '.' . $file->extension();
             $validated['file_path'] = $file->storeAs('circulars', $filename, 'public');
+        } else {
+            $validated['file_path'] = null;
+        }
+
+        // Clear external_link if file is uploaded
+        if ($validated['file_type'] === 'file') {
+            $validated['external_link'] = null;
+        } else {
+            $validated['file_path'] = null;
         }
 
         Circular::create($validated);
@@ -84,9 +99,10 @@ class CircularController extends Controller
             'circular_number' => 'required|string|max:255|unique:circulars,circular_number,' . $circular->id,
             'circular_code' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
-            'file_type' => 'required|in:pdf_upload,drive_link,doc_upload',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'external_link' => 'nullable|url',
+            'category' => 'nullable|string|max:255',
+            'file_type' => 'required|in:file,url',
+            'file_path' => 'required_if:file_type,file|nullable|file|mimes:pdf,doc,docx|max:10240',
+            'external_link' => 'required_if:file_type,url|nullable|url',
             'published_date' => 'required|date',
             'is_pinned' => 'boolean',
         ]);
@@ -101,6 +117,13 @@ class CircularController extends Controller
             $file = $request->file('file_path');
             $filename = time() . '_' . uniqid() . '.' . $file->extension();
             $validated['file_path'] = $file->storeAs('circulars', $filename, 'public');
+        }
+
+        // Clear external_link if file is uploaded
+        if ($validated['file_type'] === 'file') {
+            $validated['external_link'] = null;
+        } elseif ($validated['file_type'] === 'url' && !$request->hasFile('file_path')) {
+            $validated['file_path'] = null;
         }
 
         $circular->update($validated);

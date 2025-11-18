@@ -47,20 +47,32 @@ class SyllabusController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'category' => 'required|in:Singithi,Cubs,Junior Scouts,Senior Scouts,Rovers,Masters,General',
-            'resource_type' => 'required|in:pdf_upload,drive_link,video_link,doc_upload',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'external_url' => 'nullable|url',
+            'category' => 'required|string|max:255|regex:/^\S+$/',
+            'resource_type' => 'required|in:file,url',
+            'file_path' => 'required_if:resource_type,file|nullable|file|mimes:pdf,doc,docx|max:10240',
+            'external_url' => 'required_if:resource_type,url|nullable|url',
             'description' => 'nullable|string',
             'published_date' => 'required|date',
             'is_active' => 'boolean',
         ]);
+
+        // Convert category to lowercase
+        $validated['category'] = strtolower($validated['category']);
 
         // Handle file upload
         if ($request->hasFile('file_path')) {
             $file = $request->file('file_path');
             $filename = time() . '_' . uniqid() . '.' . $file->extension();
             $validated['file_path'] = $file->storeAs('syllabi', $filename, 'public');
+        } else {
+            $validated['file_path'] = null;
+        }
+
+        // Clear external_url if file is uploaded
+        if ($validated['resource_type'] === 'file') {
+            $validated['external_url'] = null;
+        } else {
+            $validated['file_path'] = null;
         }
 
         Syllabus::create($validated);
@@ -83,14 +95,17 @@ class SyllabusController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'category' => 'required|in:Singithi,Cubs,Junior Scouts,Senior Scouts,Rovers,Masters,General',
-            'resource_type' => 'required|in:pdf_upload,drive_link,video_link,doc_upload',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'external_url' => 'nullable|url',
+            'category' => 'required|string|max:255|regex:/^\S+$/',
+            'resource_type' => 'required|in:file,url',
+            'file_path' => 'required_if:resource_type,file|nullable|file|mimes:pdf,doc,docx|max:10240',
+            'external_url' => 'required_if:resource_type,url|nullable|url',
             'description' => 'nullable|string',
             'published_date' => 'required|date',
             'is_active' => 'boolean',
         ]);
+
+        // Convert category to lowercase
+        $validated['category'] = strtolower($validated['category']);
 
         // Handle file upload
         if ($request->hasFile('file_path')) {
@@ -102,6 +117,13 @@ class SyllabusController extends Controller
             $file = $request->file('file_path');
             $filename = time() . '_' . uniqid() . '.' . $file->extension();
             $validated['file_path'] = $file->storeAs('syllabi', $filename, 'public');
+        }
+
+        // Clear external_url if file is uploaded
+        if ($validated['resource_type'] === 'file') {
+            $validated['external_url'] = null;
+        } elseif ($validated['resource_type'] === 'url' && !$request->hasFile('file_path')) {
+            $validated['file_path'] = null;
         }
 
         $syllabus->update($validated);

@@ -38,6 +38,23 @@
                         @enderror
                     </div>
 
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                            Category
+                        </label>
+                        <input type="text"
+                               name="category"
+                               id="category"
+                               value="{{ old('category') }}"
+                               placeholder="e.g., administrative, academic, general"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('category') border-red-500 @enderror">
+                        @error('category')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">Optional - helps organize circulars</p>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Circular Number -->
                         <div>
@@ -105,7 +122,7 @@
                                 onchange="toggleFileFields()">
                             <option value="">Select File Type</option>
                             <option value="file" {{ old('file_type') == 'file' ? 'selected' : '' }}>File Upload</option>
-                            <option value="link" {{ old('file_type') == 'link' ? 'selected' : '' }}>External Link</option>
+                            <option value="url" {{ old('file_type') == 'url' ? 'selected' : '' }}>External Link</option>
                         </select>
                         @error('file_type')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -197,7 +214,7 @@
 
         if (fileType === 'file') {
             fileField.classList.remove('hidden');
-        } else if (fileType === 'link') {
+        } else if (fileType === 'url') {
             linkField.classList.remove('hidden');
         }
     }
