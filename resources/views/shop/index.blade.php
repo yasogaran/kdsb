@@ -27,15 +27,13 @@
                             <div class="mb-6">
                                 <h4 class="font-semibold text-sm text-slate-700 mb-3">Categories</h4>
                                 <div class="space-y-2">
-                                    <label class="flex items-center">
-                                        <input type="checkbox" class="rounded text-amber-900" {{ !request('category') ? 'checked' : '' }}>
+                                    <a href="{{ route('shop.index', request()->except('category')) }}" class="flex items-center py-1 {{ !request('category') ? 'text-amber-900 font-semibold' : 'text-slate-700 hover:text-amber-900' }}">
                                         <span class="ml-2 text-sm">All Products</span>
-                                    </label>
+                                    </a>
                                     @foreach($categories as $category)
-                                        <label class="flex items-center">
-                                            <input type="checkbox" class="rounded text-amber-900" {{ request('category') == $category ? 'checked' : '' }}>
-                                            <span class="ml-2 text-sm">{{ $category }}</span>
-                                        </label>
+                                        <a href="{{ route('shop.index', array_merge(request()->except('category'), ['category' => $category->slug])) }}" class="flex items-center py-1 {{ request('category') == $category->slug ? 'text-amber-900 font-semibold' : 'text-slate-700 hover:text-amber-900' }}">
+                                            <span class="ml-2 text-sm">{{ $category->name }}</span>
+                                        </a>
                                     @endforeach
                                 </div>
                             </div>
@@ -44,10 +42,14 @@
                         <!-- Stock Status -->
                         <div>
                             <h4 class="font-semibold text-sm text-slate-700 mb-3">Stock Status</h4>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="rounded text-amber-900" {{ request('in_stock') ? 'checked' : '' }}>
-                                <span class="ml-2 text-sm">In Stock Only</span>
-                            </label>
+                            <div class="space-y-2">
+                                <a href="{{ route('shop.index', array_merge(request()->except('in_stock'), [])) }}" class="flex items-center py-1 {{ !request('in_stock') ? 'text-amber-900 font-semibold' : 'text-slate-700 hover:text-amber-900' }}">
+                                    <span class="ml-2 text-sm">All Products</span>
+                                </a>
+                                <a href="{{ route('shop.index', array_merge(request()->except('in_stock'), ['in_stock' => 1])) }}" class="flex items-center py-1 {{ request('in_stock') ? 'text-amber-900 font-semibold' : 'text-slate-700 hover:text-amber-900' }}">
+                                    <span class="ml-2 text-sm">In Stock Only</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

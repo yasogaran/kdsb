@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class PublicShopController extends Controller
@@ -57,13 +58,10 @@ class PublicShopController extends Controller
 
         $products = $query->paginate(12);
 
-        // Get available categories
-        $categories = Product::where('status', 'available')
-            ->with('category')
-            ->get()
-            ->pluck('category')
-            ->unique()
-            ->filter();
+        // Get categories that have available products
+        $categories = ProductCategory::whereHas('products', function($query) {
+            $query->where('status', 'available');
+        })->orderBy('sort_order')->orderBy('name')->get();
 
         return view('shop.index', compact('products', 'categories'));
     }
