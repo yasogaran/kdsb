@@ -251,9 +251,100 @@
             </div>
         </div>
     </form>
+
+    <!-- Gallery Images Management -->
+    <div class="mt-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Gallery Images</h3>
+                    <p class="text-sm text-gray-600 mt-1">Upload and manage images for this gallery ({{ $gallery->image_count }} images)</p>
+                </div>
+            </div>
+
+            <!-- Upload Images Form -->
+            <form id="uploadImagesForm" class="mb-6">
+                @csrf
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition">
+                    <input type="file"
+                           id="galleryImages"
+                           name="images[]"
+                           multiple
+                           accept="image/*"
+                           class="hidden"
+                           onchange="handleImageUpload(event)">
+                    <label for="galleryImages" class="cursor-pointer">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-600">
+                            <span class="font-semibold text-primary">Click to upload</span> or drag and drop
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB each</p>
+                    </label>
+                </div>
+                <div id="uploadProgress" class="hidden mt-4">
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded">
+                        <span id="uploadMessage">Uploading images...</span>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Existing Images Grid with Drag & Drop -->
+            <div id="imagesContainer">
+                @if($gallery->images->count() > 0)
+                <div id="sortableImages" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($gallery->images as $image)
+                    <div class="image-item bg-white border border-gray-300 rounded-lg p-4 hover:shadow-lg transition cursor-move" data-id="{{ $image->id }}">
+                        <!-- Drag Handle -->
+                        <div class="flex items-center justify-between mb-2">
+                            <svg class="w-6 h-6 text-gray-400 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                            </svg>
+                            <button type="button"
+                                    onclick="deleteImage({{ $image->id }})"
+                                    class="text-red-600 hover:text-red-800 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Image -->
+                        <img src="{{ asset('storage/' . $image->image_path) }}"
+                             alt="{{ $image->caption }}"
+                             class="w-full h-48 object-cover rounded-lg mb-3">
+
+                        <!-- Caption Input -->
+                        <input type="text"
+                               value="{{ $image->caption }}"
+                               placeholder="Add caption..."
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                               onblur="updateCaption({{ $image->id }}, this.value)">
+
+                        <p class="text-xs text-gray-500 mt-2">Order: <span class="sort-order">{{ $image->sort_order }}</span></p>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <div class="text-center py-12 bg-gray-50 rounded-lg">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <p class="mt-2 text-sm text-gray-600">No images yet. Upload your first image above!</p>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.css">
+@endpush
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
     // Generate slug from title
     function generateSlug() {
@@ -277,6 +368,145 @@
             }
             reader.readAsDataURL(file);
         }
+    }
+
+    // Initialize Sortable for drag & drop
+    const sortableImages = document.getElementById('sortableImages');
+    if (sortableImages) {
+        new Sortable(sortableImages, {
+            animation: 150,
+            handle: '.image-item',
+            ghostClass: 'opacity-50',
+            onEnd: function(evt) {
+                updateImageOrder();
+            }
+        });
+    }
+
+    // Handle image upload
+    function handleImageUpload(event) {
+        const files = event.target.files;
+        if (files.length === 0) return;
+
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images[]', files[i]);
+        }
+
+        // Show progress
+        document.getElementById('uploadProgress').classList.remove('hidden');
+        document.getElementById('uploadMessage').textContent = `Uploading ${files.length} image(s)...`;
+
+        fetch('{{ route("admin.galleries.images.store", $gallery) }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content || '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                document.getElementById('uploadMessage').textContent = data.message;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                alert('Error uploading images: ' + (data.message || 'Unknown error'));
+                document.getElementById('uploadProgress').classList.add('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error uploading images. Please try again.');
+            document.getElementById('uploadProgress').classList.add('hidden');
+        });
+
+        // Reset file input
+        event.target.value = '';
+    }
+
+    // Update image order after drag & drop
+    function updateImageOrder() {
+        const imageItems = document.querySelectorAll('.image-item');
+        const order = Array.from(imageItems).map(item => item.dataset.id);
+
+        fetch('{{ route("admin.galleries.images.order", $gallery) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content || '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ order: order })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update sort order display
+                imageItems.forEach((item, index) => {
+                    item.querySelector('.sort-order').textContent = index + 1;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error updating order:', error);
+            alert('Error updating image order. Please refresh and try again.');
+        });
+    }
+
+    // Update image caption
+    function updateCaption(imageId, caption) {
+        fetch(`/admin/gallery-images/${imageId}/caption`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content || '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ caption: caption })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert('Error updating caption');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Delete image
+    function deleteImage(imageId) {
+        if (!confirm('Are you sure you want to delete this image?')) {
+            return;
+        }
+
+        fetch(`/admin/gallery-images/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content || '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the image item from DOM
+                const imageItem = document.querySelector(`[data-id="${imageId}"]`);
+                if (imageItem) {
+                    imageItem.remove();
+                }
+                // Reload to update count
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                alert('Error deleting image');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting image. Please try again.');
+        });
     }
 </script>
 @endpush

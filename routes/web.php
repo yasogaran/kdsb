@@ -48,6 +48,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         // Galleries
         Route::resource('galleries', GalleryController::class);
         Route::post('galleries/{gallery}/images', [GalleryImageController::class, 'store'])->name('galleries.images.store');
+        Route::post('galleries/{gallery}/images/order', [GalleryImageController::class, 'updateOrder'])->name('galleries.images.order');
+        Route::patch('gallery-images/{image}/caption', [GalleryImageController::class, 'updateCaption'])->name('gallery-images.caption');
         Route::delete('gallery-images/{image}', [GalleryImageController::class, 'destroy'])->name('gallery-images.destroy');
 
         // Resources
