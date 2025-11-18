@@ -1,7 +1,10 @@
 @extends('layouts.public')
 
-@section('title', '{{ $sectionData['name'] }}')
-@section('description', '{{ $sectionData['description'] }}')
+@section('title', $sectionData['name'])
+
+@section('description')
+{{ $sectionData['description'] }}
+@endsection
 
 @section('content')
 

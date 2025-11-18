@@ -1,7 +1,10 @@
 @extends('layouts.public')
 
-@section('title', '{{ $gallery->title }}')
-@section('description', '{{ $gallery->description ?? 'View photos from ' . $gallery->title }}')
+@section('title', $gallery->title)
+
+@section('description')
+{{ $gallery->description ?? 'View photos from ' . $gallery->title }}
+@endsection
 
 @section('content')
 

@@ -1,7 +1,10 @@
 @extends('layouts.public')
 
-@section('title', '{{ $product->name }}')
-@section('description', '{{ $product->description ? Str::limit(strip_tags($product->description), 160) : $product->name }}')
+@section('title', $product->name)
+
+@section('description')
+{{ $product->description ? Str::limit(strip_tags($product->description), 160) : $product->name }}
+@endsection
 
 @section('content')
 

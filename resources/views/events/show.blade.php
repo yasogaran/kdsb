@@ -1,19 +1,22 @@
 @extends('layouts.public')
 
-@section('title', '{{ $event->title }}')
-@section('description', '{{ $event->excerpt ?? Str::limit(strip_tags($event->description), 160) }}')
+@section('title', $event->title)
+
+@section('description')
+{{ $event->summary ?? Str::limit(strip_tags($event->content), 160) }}
+@endsection
 
 @section('content')
 
     <!-- Hero Banner -->
     <section class="relative h-[500px]">
-        @if($event->featured_image)
-            <img src="{{ Storage::url($event->featured_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+        @if($event->banner_image)
+            <img src="{{ Storage::url($event->banner_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
         @else
             <div class="w-full h-full bg-gradient-to-br from-amber-900 to-emerald-900"></div>
         @endif
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        @if($event->start_date >= now())
+        @if($event->start_datetime >= now())
             <div class="absolute top-8 right-8">
                 <x-badge type="success" class="text-base px-4 py-2">Registration Open</x-badge>
             </div>
@@ -33,15 +36,17 @@
                     <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6">{{ $event->title }}</h1>
 
                     <div class="prose prose-lg max-w-none">
-                        {!! $event->description !!}
+                        {!! $event->content !!}
                     </div>
 
-                    @if($event->gallery && $event->gallery->images->count() > 0)
+                    @if($event->galleries->count() > 0)
                         <div class="mt-12">
                             <h3 class="text-2xl font-bold text-slate-900 mb-6">Event Gallery</h3>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                @foreach($event->gallery->images as $image)
-                                    <img src="{{ Storage::url($image->image_path) }}" alt="{{ $image->caption }}" class="w-full aspect-square object-cover rounded-lg">
+                                @foreach($event->galleries as $gallery)
+                                    @foreach($gallery->images as $image)
+                                        <img src="{{ Storage::url($image->image_path) }}" alt="{{ $image->caption }}" class="w-full aspect-square object-cover rounded-lg">
+                                    @endforeach
                                 @endforeach
                             </div>
                         </div>
@@ -61,14 +66,14 @@
                                     <span class="font-semibold">Date & Time</span>
                                 </div>
                                 <p class="text-slate-700 ml-7">
-                                    {{ $event->start_date->format('F d, Y') }}
-                                    @if($event->end_date && $event->end_date != $event->start_date)
-                                        - {{ $event->end_date->format('F d, Y') }}
+                                    {{ $event->start_datetime->format('F d, Y') }}
+                                    @if($event->end_datetime && $event->end_datetime->format('Y-m-d') != $event->start_datetime->format('Y-m-d'))
+                                        - {{ $event->end_datetime->format('F d, Y') }}
                                     @endif
                                 </p>
                             </div>
 
-                            @if($event->location)
+                            @if($event->venue_name || $event->address)
                                 <div>
                                     <div class="flex items-center text-slate-600 mb-1">
                                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +81,7 @@
                                         </svg>
                                         <span class="font-semibold">Location</span>
                                     </div>
-                                    <p class="text-slate-700 ml-7">{{ $event->location }}</p>
+                                    <p class="text-slate-700 ml-7">{{ $event->venue_name ?? $event->address }}</p>
                                 </div>
                             @endif
 
@@ -99,7 +104,7 @@
                             @endif
                         </div>
 
-                        @if($event->start_date >= now())
+                        @if($event->start_datetime >= now())
                             <div class="mt-6">
                                 <x-button-primary href="{{ route('contact') }}" class="w-full justify-center">
                                     Register Now
@@ -116,7 +121,7 @@
                                     <a href="{{ route('events.show', $related->slug) }}" class="block group">
                                         <x-card :hover="false" class="group-hover:shadow-md transition">
                                             <h5 class="font-semibold text-slate-900 group-hover:text-amber-900 mb-2">{{ $related->title }}</h5>
-                                            <p class="text-sm text-slate-600">{{ $related->start_date->format('M d, Y') }}</p>
+                                            <p class="text-sm text-slate-600">{{ $related->start_datetime->format('M d, Y') }}</p>
                                         </x-card>
                                     </a>
                                 @endforeach

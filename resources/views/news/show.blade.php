@@ -1,15 +1,21 @@
 @extends('layouts.public')
 
-@section('title', '{{ $post->title }}')
-@section('description', '{{ $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160) }}')
+@section('title', $post->title)
+
+@section('description')
+{{ $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160) }}
+@endsection
+
+@section('ogImage')
+{{ $post->image ? Storage::url($post->image) : null }}
+@endsection
 
 @section('content')
-@section('ogImage', '{{ $post->featured_image ? Storage::url($post->featured_image) : null }}')
 
     <!-- Featured Image -->
-    @if($post->featured_image)
+    @if($post->image)
         <section class="relative h-[600px]">
-            <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+            <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
         </section>
     @endif
