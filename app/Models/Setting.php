@@ -26,4 +26,9 @@ class Setting extends Model
             ['value' => $value]
         );
     }
+
+    public static function getSettings()
+    {
+        return static::all()->pluck('value', 'key')->toArray();
+    }
 }
