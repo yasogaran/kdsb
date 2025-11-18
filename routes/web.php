@@ -1,6 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ScoutSectionController;
+use App\Http\Controllers\PublicEventController;
+use App\Http\Controllers\PublicPostController;
+use App\Http\Controllers\PublicGalleryController;
+use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\PublicShopController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PostController;
@@ -16,9 +25,55 @@ use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// About Routes
+Route::prefix('about')->name('about.')->group(function () {
+    Route::get('/', [AboutController::class, 'index'])->name('index');
+    Route::get('/history', [AboutController::class, 'history'])->name('history');
+    Route::get('/team', [AboutController::class, 'team'])->name('team');
+    Route::get('/vision', [AboutController::class, 'vision'])->name('vision');
+});
+
+// Scout Sections Routes
+Route::prefix('sections')->name('sections.')->group(function () {
+    Route::get('/', [ScoutSectionController::class, 'index'])->name('index');
+    Route::get('/{section}', [ScoutSectionController::class, 'show'])->name('show');
+});
+
+// Events Routes
+Route::prefix('events')->name('events.')->group(function () {
+    Route::get('/', [PublicEventController::class, 'index'])->name('index');
+    Route::get('/{slug}', [PublicEventController::class, 'show'])->name('show');
+});
+
+// News/Blog Routes
+Route::prefix('news')->name('news.')->group(function () {
+    Route::get('/', [PublicPostController::class, 'index'])->name('index');
+    Route::get('/{slug}', [PublicPostController::class, 'show'])->name('show');
+});
+
+// Gallery Routes
+Route::prefix('gallery')->name('gallery.')->group(function () {
+    Route::get('/', [PublicGalleryController::class, 'index'])->name('index');
+    Route::get('/{slug}', [PublicGalleryController::class, 'show'])->name('show');
+});
+
+// Resources Routes
+Route::prefix('resources')->name('resources.')->group(function () {
+    Route::get('/circulars', [ResourceController::class, 'circulars'])->name('circulars');
+    Route::get('/syllabus', [ResourceController::class, 'syllabus'])->name('syllabus');
+});
+
+// Shop Routes
+Route::prefix('shop')->name('shop.')->group(function () {
+    Route::get('/', [PublicShopController::class, 'index'])->name('index');
+    Route::get('/{slug}', [PublicShopController::class, 'show'])->name('show');
+});
+
+// Contact Routes
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
 // User Dashboard (Breeze default)
 Route::get('/dashboard', function () {
