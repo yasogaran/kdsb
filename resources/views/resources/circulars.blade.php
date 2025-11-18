@@ -54,10 +54,10 @@
                             @foreach($circulars as $circular)
                                 <tr class="hover:bg-slate-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                                        {{ $circular->date->format('M d, Y') }}
+                                        {{ $circular->published_date ? $circular->published_date->format('M d, Y') : 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                                        {{ $circular->reference_number }}
+                                        {{ $circular->circular_number }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-slate-900">
                                         {{ $circular->title }}
