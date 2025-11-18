@@ -155,21 +155,16 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                        @can('view syllabi')
                         <a href="{{ route('admin.syllabi.show', $syllabus) }}"
                            class="text-gray-600 hover:text-gray-900">
                             View
                         </a>
-                        @endcan
 
-                        @can('edit syllabi')
                         <a href="{{ route('admin.syllabi.edit', $syllabus) }}"
                            class="text-blue-600 hover:text-blue-900">
                             Edit
                         </a>
-                        @endcan
 
-                        @can('delete syllabi')
                         <form action="{{ route('admin.syllabi.destroy', $syllabus) }}"
                               method="POST"
                               onsubmit="return confirm('Are you sure you want to delete this syllabus?');"
@@ -180,7 +175,6 @@
                                 Delete
                             </button>
                         </form>
-                        @endcan
                     </td>
                 </tr>
                 @empty
