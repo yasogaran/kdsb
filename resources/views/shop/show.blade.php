@@ -118,4 +118,61 @@
             @endif
         </div>
     </section>
+
+    @push('structured-data')
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "{{ $product->title }}",
+      "image": [
+        @if($product->primary_image)
+        "{{ Storage::url($product->primary_image) }}"{{ $product->images && $product->images->count() > 0 ? ',' : '' }}
+        @endif
+        @if($product->images && $product->images->count() > 0)
+          @foreach($product->images as $index => $image)
+          "{{ Storage::url($image->image_path) }}"{{ $loop->last ? '' : ',' }}
+          @endforeach
+        @endif
+      ],
+      "description": "{{ $product->meta_description ?? Str::limit(strip_tags($product->description), 160) }}",
+      @if($product->sku)
+      "sku": "{{ $product->sku }}",
+      @endif
+      @if($product->gtin)
+      "gtin": "{{ $product->gtin }}",
+      @endif
+      @if($product->mpn)
+      "mpn": "{{ $product->mpn }}",
+      @endif
+      @if($product->brand)
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ $product->brand }}"
+      },
+      @endif
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ route('shop.show', $product->slug) }}",
+        "priceCurrency": "{{ $product->currency ?? 'LKR' }}",
+        "price": "{{ $product->sale_price && $product->sale_price < $product->price ? $product->sale_price : $product->price }}",
+        @if($product->price_valid_until)
+        "priceValidUntil": "{{ $product->price_valid_until->format('Y-m-d') }}",
+        @endif
+        "itemCondition": "https://schema.org/{{ $product->condition === 'new' ? 'NewCondition' : ($product->condition === 'refurbished' ? 'RefurbishedCondition' : 'UsedCondition') }}",
+        "availability": "https://schema.org/{{ $product->qty > 0 ? 'InStock' : ($product->availability_date ? 'PreOrder' : 'OutOfStock') }}",
+        @if(!$product->qty && $product->availability_date)
+        "availabilityStarts": "{{ $product->availability_date->format('Y-m-d') }}",
+        @endif
+        "seller": {
+          "@type": "Organization",
+          "name": "Kandy District Scout Branch"
+        }
+      }
+      @if($product->category)
+      ,"category": "{{ $product->category->name }}"
+      @endif
+    }
+    </script>
+    @endpush
 @endsection

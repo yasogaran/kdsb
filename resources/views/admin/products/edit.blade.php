@@ -90,6 +90,131 @@
                     </div>
                 </div>
 
+                <!-- Product Identity & SEO Data -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Product Identity & SEO Data</h3>
+                    <p class="text-sm text-gray-600 mb-4">These fields improve search engine visibility and product identification</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Brand -->
+                        <div>
+                            <label for="brand" class="block text-sm font-medium text-gray-700 mb-2">
+                                Brand
+                            </label>
+                            <input type="text"
+                                   name="brand"
+                                   id="brand"
+                                   value="{{ old('brand', $product->brand) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('brand') border-red-500 @enderror"
+                                   placeholder="e.g., Scout Essentials">
+                            @error('brand')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <p class="mt-1 text-xs text-gray-500">Manufacturer or brand name</p>
+                        </div>
+
+                        <!-- Condition -->
+                        <div>
+                            <label for="condition" class="block text-sm font-medium text-gray-700 mb-2">
+                                Condition
+                            </label>
+                            <select name="condition"
+                                    id="condition"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('condition') border-red-500 @enderror">
+                                <option value="new" {{ old('condition', $product->condition ?? 'new') == 'new' ? 'selected' : '' }}>New</option>
+                                <option value="refurbished" {{ old('condition', $product->condition) == 'refurbished' ? 'selected' : '' }}>Refurbished</option>
+                                <option value="used" {{ old('condition', $product->condition) == 'used' ? 'selected' : '' }}>Used</option>
+                            </select>
+                            @error('condition')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- GTIN/Barcode -->
+                        <div>
+                            <label for="gtin" class="block text-sm font-medium text-gray-700 mb-2">
+                                GTIN / Barcode
+                            </label>
+                            <input type="text"
+                                   name="gtin"
+                                   id="gtin"
+                                   value="{{ old('gtin', $product->gtin) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('gtin') border-red-500 @enderror"
+                                   placeholder="e.g., 0123456789012">
+                            @error('gtin')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <p class="mt-1 text-xs text-gray-500">Global Trade Item Number</p>
+                        </div>
+
+                        <!-- MPN -->
+                        <div>
+                            <label for="mpn" class="block text-sm font-medium text-gray-700 mb-2">
+                                MPN
+                            </label>
+                            <input type="text"
+                                   name="mpn"
+                                   id="mpn"
+                                   value="{{ old('mpn', $product->mpn) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('mpn') border-red-500 @enderror"
+                                   placeholder="e.g., SC-1234">
+                            @error('mpn')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <p class="mt-1 text-xs text-gray-500">Manufacturer Part Number</p>
+                        </div>
+
+                        <!-- Currency -->
+                        <div>
+                            <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
+                                Currency
+                            </label>
+                            <select name="currency"
+                                    id="currency"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('currency') border-red-500 @enderror">
+                                <option value="LKR" {{ old('currency', $product->currency ?? 'LKR') == 'LKR' ? 'selected' : '' }}>LKR - Sri Lankan Rupee</option>
+                                <option value="USD" {{ old('currency', $product->currency) == 'USD' ? 'selected' : '' }}>USD - US Dollar</option>
+                                <option value="EUR" {{ old('currency', $product->currency) == 'EUR' ? 'selected' : '' }}>EUR - Euro</option>
+                            </select>
+                            @error('currency')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Price Valid Until -->
+                        <div>
+                            <label for="price_valid_until" class="block text-sm font-medium text-gray-700 mb-2">
+                                Price Valid Until
+                            </label>
+                            <input type="date"
+                                   name="price_valid_until"
+                                   id="price_valid_until"
+                                   value="{{ old('price_valid_until', $product->price_valid_until?->format('Y-m-d')) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('price_valid_until') border-red-500 @enderror">
+                            @error('price_valid_until')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <p class="mt-1 text-xs text-gray-500">Optional: When current price expires</p>
+                        </div>
+                    </div>
+
+                    <!-- Availability Date (full width) -->
+                    <div class="mt-4">
+                        <label for="availability_date" class="block text-sm font-medium text-gray-700 mb-2">
+                            Availability Date (if out of stock)
+                        </label>
+                        <input type="date"
+                               name="availability_date"
+                               id="availability_date"
+                               value="{{ old('availability_date', $product->availability_date?->format('Y-m-d')) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent @error('availability_date') border-red-500 @enderror">
+                        @error('availability_date')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">When product will be back in stock (for pre-orders)</p>
+                    </div>
+                </div>
+
                 <!-- About & Description -->
                 <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Product Details</h3>
