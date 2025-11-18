@@ -10,7 +10,7 @@ class PublicPostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::where('published', true);
+        $query = Post::published();
 
         // Filter by category
         if ($request->has('category')) {
@@ -38,13 +38,13 @@ class PublicPostController extends Controller
 
     public function show($slug)
     {
-        $post = Post::where('published', true)
+        $post = Post::published()
             ->where('slug', $slug)
             ->with('category')
             ->firstOrFail();
 
         // Get recent posts
-        $recentPosts = Post::where('published', true)
+        $recentPosts = Post::published()
             ->where('id', '!=', $post->id)
             ->latest('published_at')
             ->take(5)

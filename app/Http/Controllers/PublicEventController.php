@@ -9,18 +9,18 @@ class PublicEventController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Event::where('published', true);
+        $query = Event::where('status', 'published');
 
         // Filter by type (upcoming/past)
         if ($request->has('filter')) {
             if ($request->filter === 'upcoming') {
-                $query->where('start_date', '>=', now());
+                $query->where('start_datetime', '>=', now());
             } elseif ($request->filter === 'past') {
-                $query->where('end_date', '<', now());
+                $query->where('end_datetime', '<', now());
             }
         } else {
             // Default to upcoming
-            $query->where('start_date', '>=', now());
+            $query->where('start_datetime', '>=', now());
         }
 
         // Filter by location type
@@ -32,26 +32,26 @@ class PublicEventController extends Controller
         if ($request->has('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                  ->orWhere('content', 'like', '%' . $request->search . '%');
             });
         }
 
-        $events = $query->orderBy('start_date', 'asc')->paginate(12);
+        $events = $query->orderBy('start_datetime', 'asc')->paginate(12);
 
         return view('events.index', compact('events'));
     }
 
     public function show($slug)
     {
-        $event = Event::where('published', true)
+        $event = Event::where('status', 'published')
             ->where('slug', $slug)
-            ->with('gallery.images')
+            ->with('galleries.images')
             ->firstOrFail();
 
         // Get related events
-        $relatedEvents = Event::where('published', true)
+        $relatedEvents = Event::where('status', 'published')
             ->where('id', '!=', $event->id)
-            ->where('start_date', '>=', now())
+            ->where('start_datetime', '>=', now())
             ->take(3)
             ->get();
 

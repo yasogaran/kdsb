@@ -1,9 +1,13 @@
 @props(['event'])
 
 <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-    @if($event->featured_image)
+    @if($event->thumbnail_image)
         <div class="aspect-video overflow-hidden">
-            <img src="{{ Storage::url($event->featured_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+            <img src="{{ Storage::url($event->thumbnail_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+        </div>
+    @elseif($event->banner_image)
+        <div class="aspect-video overflow-hidden">
+            <img src="{{ Storage::url($event->banner_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
         </div>
     @else
         <div class="aspect-video bg-gradient-to-br from-amber-900 to-emerald-900"></div>
@@ -11,7 +15,7 @@
 
     <div class="p-6">
         <div class="mb-3">
-            <x-badge type="warning">{{ $event->start_date->format('M d, Y') }}</x-badge>
+            <x-badge type="warning">{{ $event->start_datetime->format('M d, Y') }}</x-badge>
         </div>
 
         <h3 class="text-xl font-semibold text-slate-900 mb-3">{{ $event->title }}</h3>
@@ -22,7 +26,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                {{ $event->location ?? 'Kandy' }}
+                {{ $event->venue_name ?? $event->address ?? 'Kandy' }}
             </div>
             <div class="flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,8 +36,8 @@
             </div>
         </div>
 
-        @if($event->excerpt)
-            <p class="text-sm text-slate-600 mb-4 line-clamp-2">{{ $event->excerpt }}</p>
+        @if($event->summary)
+            <p class="text-sm text-slate-600 mb-4 line-clamp-2">{{ $event->summary }}</p>
         @endif
 
         @if($event->registration_deadline && $event->registration_deadline->isFuture())

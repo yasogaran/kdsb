@@ -14,26 +14,28 @@ class HomeController extends Controller
     public function index()
     {
         // Get featured/upcoming events (limit 3)
-        $events = Event::where('published', true)
-            ->where('start_date', '>=', now())
-            ->orderBy('start_date', 'asc')
+        $events = Event::where('status', 'published')
+            ->where('start_datetime', '>=', now())
+            ->orderBy('start_datetime', 'asc')
             ->take(3)
             ->get();
 
         // Get latest news/posts (1 featured + 4 recent)
-        $featuredPost = Post::where('published', true)
-            ->where('featured', true)
+        $featuredPost = Post::published()
+            ->featured()
             ->latest('published_at')
             ->first();
 
-        $recentPosts = Post::where('published', true)
-            ->where('id', '!=', $featuredPost?->id)
+        $recentPosts = Post::published()
+            ->when($featuredPost, function($query) use ($featuredPost) {
+                return $query->where('id', '!=', $featuredPost->id);
+            })
             ->latest('published_at')
             ->take(4)
             ->get();
 
         // Get recent gallery images
-        $galleries = Gallery::where('published', true)
+        $galleries = Gallery::published()
             ->with('images')
             ->latest('created_at')
             ->take(10)

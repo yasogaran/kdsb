@@ -2,9 +2,9 @@
 
 @if($featured)
     <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-        @if($post->featured_image)
+        @if($post->image)
             <div class="aspect-video overflow-hidden">
-                <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
             </div>
         @endif
 
@@ -36,8 +36,8 @@
     </div>
 @else
     <div class="flex gap-4 hover:bg-slate-50 p-4 rounded-lg transition">
-        @if($post->featured_image)
-            <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}" class="w-24 h-24 object-cover rounded">
+        @if($post->image)
+            <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-24 h-24 object-cover rounded">
         @else
             <div class="w-24 h-24 bg-gradient-to-br from-amber-900 to-emerald-900 rounded"></div>
         @endif

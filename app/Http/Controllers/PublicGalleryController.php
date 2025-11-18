@@ -9,7 +9,7 @@ class PublicGalleryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Gallery::where('published', true);
+        $query = Gallery::published();
 
         // Search
         if ($request->has('search')) {
@@ -28,7 +28,7 @@ class PublicGalleryController extends Controller
 
     public function show($slug)
     {
-        $gallery = Gallery::where('published', true)
+        $gallery = Gallery::published()
             ->where('slug', $slug)
             ->with('images')
             ->firstOrFail();
